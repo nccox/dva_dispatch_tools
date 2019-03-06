@@ -25,14 +25,18 @@ class ACARS_Handler(xml.sax.ContentHandler):
         self.Network = ""
         self.N1 = ""
         self.N2 = ""
+        self.PID = ""
+        self.Flight_Number = ""
+        self.Name = ""
+        self.Aircraft_Type = ""
 
     # Call when an element starts
     def startElement(self, tag, attributes):
         self.CurrentData = tag
         #print(tag)
         #print(attributes)
-        if tag == "Placemark":
-            print("*****AIRCRAFT*****")
+        #if tag == "Placemark":
+            #print("*****AIRCRAFT*****")
             #title = attributes["name"]
             #print("Name:", name)
 
@@ -42,38 +46,66 @@ class ACARS_Handler(xml.sax.ContentHandler):
         #    print("longitude:", self.Longitude)
         #elif self.CurrentData == "latitude":
         #    print("latitude:", self.Latitude)
-        if self.CurrentData == "coordinates":
-            print("Latitude:", self.Latitude)
-            print("Longitude:", self.Longitude)
+        #if self.CurrentData == "coordinates":
+            #print("Latitude:", self.Latitude)
+            #print("Longitude:", self.Longitude)
         #elif self.CurrentData == "altitude":
             #print("Altitude:", self.Altitude)
         #elif self.CurrentData == "heading":
             #print("Heading:", self.Heading)
-        elif self.CurrentData == "name":
-            print("Name:", self.Name_Raw)
-        elif self.CurrentData == "description":
-            print("Description (raw):", self.Description_Raw)
+        #elif self.CurrentData == "name":
+            #print("Name:", self.Name_Raw)
+        #elif self.CurrentData == "description":
+            #print("Description (raw):", self.Description_Raw)
             #soup = BeautifulSoup(self.Description_Raw, 'html.parser')
             #print("Description:")
             #print(soup.prettify())
-            print("From:",self.Orig)
-            print("To:",self.Dest)
-            print("Network",self.Network)
-            print("Altitude:",self.Altitude," feet")
-            print("Heading:",self.Heading," degrees")
-            print("Airspeed:",self.Airspeed," kts")
-            print("Ground speed:",self.GS," kts")
-            print("Mach:",self.Mach)
-            print("Vertical Speed:",self.Vertical_Speed," ft/s")
-            print("N1:",self.N1)
-            print("N2:",self.N2)
-            print("Fuel Flow:",self.Fuel_Flow," lbs/hr")
+            #print("From:",self.Orig)
+            #print("To:",self.Dest)
+            #print("Network",self.Network)
+            #print("Altitude:",self.Altitude," feet")
+            #print("Heading:",self.Heading," degrees")
+            #print("Airspeed:",self.Airspeed," kts")
+            #print("Ground speed:",self.GS," kts")
+            #print("Mach:",self.Mach)
+            #print("Vertical Speed:",self.Vertical_Speed," ft/s")
+            #print("N1:",self.N1)
+            #print("N2:",self.N2)
+            #print("Fuel Flow:",self.Fuel_Flow," lbs/hr")
         #elif self.CurrentData == "altitudeMode":
             #print ("Altitude Mode:", self.Altitude_Mode)
-        elif self.CurrentData == "visibility":
-            print ("Visibility:", self.Visibility)
-        elif self.CurrentData == "snippet":
-            print ("Visibility:", self.snippet)
+        #elif self.CurrentData == "visibility":
+            #print ("Visibility:", self.Visibility)
+        #elif self.CurrentData == "snippet":
+            #print ("Visibility:", self.snippet)
+        if tag == "Placemark":
+            # Print the data to the csv
+            data_list = [self.PID, self.Flight_Number, self.Name, self.Aircraft_Type, self.Orig, self.Orig_ICAO, self.Dest, self.Dest_ICAO, self.Latitude, self.Longitude, self.Altitude, self.Airspeed, self.GS, self.Mach, self.Fuel_Flow, self.Vertical_Speed, self.Network, self.N1, self.N2]
+            print("\t".join(data_list))
+            # Reset the data
+            self.Longitude = ""
+            self.Latitude = ""
+            self.Heading = ""
+            self.Altitude = ""
+            self.Name_Raw = ""
+            self.Description_Raw = ""
+            self.Altitude_Mode = ""
+            self.Visibility = ""
+            self.Snippet = ""
+            self.Orig = ""
+            self.Orig_ICAO = ""
+            self.Dest = ""
+            self.Dest_ICAO = ""
+            self.Airspeed = ""
+            self.GS = ""
+            self.Mach = ""
+            self.Fuel_Flow = ""
+            self.Vertical_Speed = ""
+            self.Network = ""
+            self.N1 = ""
+            self.N2 = ""
+            self.PID = ""
+            self.Flight_Number = ""
         self.CurrentData = ""
 
     # Call when a character is read
