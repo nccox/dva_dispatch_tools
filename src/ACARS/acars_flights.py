@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 
 class ACARS_Handler(xml.sax.ContentHandler):
-    def __init__(self):
+    def __init__(self,newfile=True,filepath="testoutput.csv"):
         self.CurrentData = ""
         self.Longitude = ""
         self.Latitude = ""
@@ -30,64 +30,18 @@ class ACARS_Handler(xml.sax.ContentHandler):
         self.Flight_Number = ""
         self.Name = ""
         self.Aircraft_Type = ""
-        self.Output_File = "testoutput.csv"
-        self.__start_file__()
+        self.Output_File = filepath
+        if newfile:
+            self.__start_file__()
 
     # Call when an element starts
     def startElement(self, tag, attributes):
         self.CurrentData = tag
-        #print(tag)
-        #print(attributes)
-        #if tag == "Placemark":
-            #print("*****AIRCRAFT*****")
-            #title = attributes["name"]
-            #print("Name:", name)
 
    # Call when an elements ends
     def endElement(self, tag):
-        #if self.CurrentData == "longitude":
-        #    print("longitude:", self.Longitude)
-        #elif self.CurrentData == "latitude":
-        #    print("latitude:", self.Latitude)
-        #if self.CurrentData == "coordinates":
-            #print("Latitude:", self.Latitude)
-            #print("Longitude:", self.Longitude)
-        #elif self.CurrentData == "altitude":
-            #print("Altitude:", self.Altitude)
-        #elif self.CurrentData == "heading":
-            #print("Heading:", self.Heading)
-        #elif self.CurrentData == "name":
-            #print("Name:", self.Name_Raw)
-        #if self.CurrentData == "description":
-            #print("Description (raw):", self.Description_Raw)
-            #soup = BeautifulSoup(self.Description_Raw, 'html.parser')
-            #print("Description:")
-            #print(soup.prettify())
-            #print("From:",self.Orig)
-            #print("To:",self.Dest)
-            #print("Network",self.Network)
-            #print("Altitude:",self.Altitude," feet")
-            #print("Heading:",self.Heading," degrees")
-            #print("Airspeed:",self.Airspeed," kts")
-            #print("Ground speed:",self.GS," kts")
-            #print("Mach:",self.Mach)
-            #print("Vertical Speed:",self.Vertical_Speed," ft/s")
-            #print("N1:",self.N1)
-            #print("N2:",self.N2)
-            #print("Fuel Flow:",self.Fuel_Flow," lbs/hr")
-        #elif self.CurrentData == "altitudeMode":
-            #print ("Altitude Mode:", self.Altitude_Mode)
-        #elif self.CurrentData == "visibility":
-            #print ("Visibility:", self.Visibility)
-        #elif self.CurrentData == "snippet":
-            #print ("Visibility:", self.snippet)
-        #if self.CurrentData == "description":
-            #data_list = [self.PID, self.Flight_Number, self.Name, self.Aircraft_Type, self.Orig, self.Orig_ICAO, self.Dest, self.Dest_ICAO, self.Altitude, self.Airspeed, self.GS, self.Mach, self.Fuel_Flow, self.Vertical_Speed, self.Network, self.N1, self.N2, self.Latitude, self.Longitude]
-            #print("\t".join(data_list))
         if tag == "Placemark":
             # Print the data to the csv
-            #data_list = self.assemble_data_row()
-            #print("\t".join(data_list))
             self.__add_line_to_file__()
             # Reset the data
             self.__reset_data__()
@@ -95,18 +49,10 @@ class ACARS_Handler(xml.sax.ContentHandler):
 
     # Call when a character is read
     def characters(self, content):
-        #if self.CurrentData == "longitude":
-            #self.Longitude = content
-        #elif self.CurrentData == "latitude":
-            #self.Latitude = content
         if self.CurrentData == "coordinates":
             coords = self.parse_coordinates(content)
             self.Latitude = coords[0]
             self.Longitude = coords[1]
-        #elif self.CurrentData == "altitude":
-            #self.Altitude = content
-        #elif self.CurrentData == "heading":
-            #self.Heading == content
         elif self.CurrentData == "name":
             self.Name_Raw = content
             if content == "Flight Progress":
