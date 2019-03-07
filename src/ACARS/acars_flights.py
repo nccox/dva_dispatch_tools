@@ -76,6 +76,13 @@ class ACARS_Handler(xml.sax.ContentHandler):
         return coords
 
     def process_description(self,content):
+        # Find flight number
+        index = content.find('<br />Flight <span class="bld">')
+        if index != -1:
+            index2 = content.find('</span>',index)
+            str_seg = content[index+31:index2]
+            str_seg = remove_from_string(str_seg,[' ','<','/','s','p','a','n','>','-'])
+            self.Flight_Number = str_seg
         # Find altitude
         index = content.find("Altitude: ")
         if index != -1:
@@ -110,7 +117,7 @@ class ACARS_Handler(xml.sax.ContentHandler):
             str_seg = content[index+9:index+12]
             self.Heading = str_seg
         # Find vertical speed
-        index = content.find("Verical Speed: ")
+        index = content.find("Vertical Speed: ")
         if index != -1:
             str_seg = content[index+15:index+21]
             str_seg = remove_from_string(str_seg,[' ','f','e','t','/','m','i','n'])
@@ -119,13 +126,13 @@ class ACARS_Handler(xml.sax.ContentHandler):
         index = content.find("N<sub>1</sub>: ")
         if index != -1:
             str_seg = content[index+15:index+21]
-            str_seg = remove_from_string(str_seg,[' ',',','N','<'])
+            str_seg = remove_from_string(str_seg,[' ',',','N','<','b'])
             self.N1 = str_seg
         # Find N2
         index = content.find("N<sub>2</sub>: ")
         if index != -1:
             str_seg = content[index+15:index+21]
-            str_seg = remove_from_string(str_seg,[' ',',','N','<'])
+            str_seg = remove_from_string(str_seg,[' ',',','N','<','b'])
             self.N2 = str_seg
         # Find fuel flow
         index = content.find("Fuel Flow:")
@@ -263,7 +270,7 @@ if ( __name__ == "__main__"):
     ACARSDataDir = get_ACARS_data_path()
 
     # Assemble the filepath
-    saveFilePath = os.path.join(ACARSDataDir,'ACARS_flights.csv')
+    saveFilePath = os.path.join(ACARSDataDir,'ACARS_flights.txt')
     
     # create an XMLReader
     parser = xml.sax.make_parser()
