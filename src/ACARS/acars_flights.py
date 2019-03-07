@@ -1,9 +1,10 @@
 import xml.sax
 from bs4 import BeautifulSoup
 import csv
+import sys, os
 
 class ACARS_Handler(xml.sax.ContentHandler):
-    def __init__(self,newfile=True,filepath="testoutput.csv"):
+    def __init__(self,newFile=True,outputFile="testoutput.csv"):
         self.CurrentData = ""
         self.Longitude = ""
         self.Latitude = ""
@@ -30,8 +31,8 @@ class ACARS_Handler(xml.sax.ContentHandler):
         self.Flight_Number = ""
         self.Name = ""
         self.Aircraft_Type = ""
-        self.Output_File = filepath
-        if newfile:
+        self.Output_File = outputFile
+        if newFile:
             self.__start_file__()
 
     # Call when an element starts
@@ -233,19 +234,46 @@ def remove_from_string(string,list_to_remove):
         string = string.replace(item,'')
     return string
 
+def get_ACARS_data_path():
+    ''' Returns the absolute path of /dva_dispatch_tools/Data/ACARS '''
+    # Get the directory of the script
+    scriptPath1 = os.path.realpath(__file__)
+    # Get the absolute path of the parent directory of the script file
+    #pathname = os.path.dirname(sys.argv[0])
+    #scriptPath2 = os.path.abspath(pathname)
+
+    # Get the parent directory of the file dva_dispatch_tools/src/ACARS
+    parentDir1 = os.path.abspath(os.path.join(scriptPath1, os.pardir))
+    # Get the absolute path of dva_dispatch_tools/src
+    parentDir2 = os.path.abspath(os.path.join(parentDir1, os.pardir))
+    # Get the absolute path of dva_dispatch_tools
+    parentDir3 = os.path.abspath(os.path.join(parentDir2, os.pardir))
+
+    # Get the absolute path of dva_dispatch_tools/Data
+    dataDir = os.path.join(parentDir3,'Data')
+    # Get the absolute path of dva_dispatch_tools/Data/ACARS
+    ACARSDataDir = os.path.join(dataDir,'ACARS')
+    return ACARSDataDir
+
 class end_of_flights(Exception):
     pass
 
 if ( __name__ == "__main__"):
+    # Get the absolute path of the ACARS Data folder
+    ACARSDataDir = get_ACARS_data_path()
+
+    # Assemble the filepath
+    saveFilePath = os.path.join(ACARSDataDir,'ACARS_flights.csv')
+    
     # create an XMLReader
     parser = xml.sax.make_parser()
     # turn off namepsaces
     parser.setFeature(xml.sax.handler.feature_namespaces, 0)
 
     # override the default ContextHandler
-    Handler = ACARS_Handler()
+    Handler = ACARS_Handler(outputFile=saveFilePath,newFile=True)
     parser.setContentHandler( Handler )
-   
+    
     try:
         parser.parse("acarsFlights.kml")
     except end_of_flights:
