@@ -261,7 +261,7 @@ class Airport_Handler(xml.sax.ContentHandler):
 
 
 def get_data_path():
-    ''' Returns the absolute path of /dva_dispatch_tools/Data '''
+    ''' Returns the absolute path of /dva_dispatch_tools/data '''
     # Get the directory of the script
     scriptPath1 = os.path.realpath(__file__)
     # Get the absolute path of the parent directory of the script file
@@ -275,15 +275,15 @@ def get_data_path():
     # Get the absolute path of dva_dispatch_tools
     parentDir3 = os.path.abspath(os.path.join(parentDir2, os.pardir))
 
-    # Get the absolute path of dva_dispatch_tools/Data
-    dataDir = os.path.join(parentDir3,'Data')
-    # Get the absolute path of dva_dispatch_tools/Data/ACARS
+    # Get the absolute path of dva_dispatch_tools/data
+    dataDir = os.path.join(parentDir3,'data')
+    # Get the absolute path of dva_dispatch_tools/data/ACARS
     #ACARSDataDir = os.path.join(dataDir,'ACARS')
     return dataDir
 
 
 def get_ACARS_data_path():
-    ''' Returns the absolute path of /dva_dispatch_tools/Data/ACARS '''
+    ''' Returns the absolute path of /dva_dispatch_tools/data/ACARS '''
     dataDir = get_data_path()
     ACARSDataDir = os.path.join(dataDir,'ACARS')
     return ACARSDataDir
