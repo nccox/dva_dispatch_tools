@@ -2,6 +2,7 @@ import xml.sax
 #from bs4 import BeautifulSoup
 import csv
 import gc
+import os
 gc.enable()
 
 class Aircraft_Handler(xml.sax.ContentHandler):
@@ -258,20 +259,53 @@ class Airport_Handler(xml.sax.ContentHandler):
         row.append(",".join(self.Airlines))
         return row
 
-if ( __name__ == "__main__"):
-   # create an XMLReader
-   parser = xml.sax.make_parser()
-   # turn off namepsaces
-   parser.setFeature(xml.sax.handler.feature_namespaces, 0)
 
-   # override the default ContextHandler
-   Handler = Aircraft_Handler(output_file="aircraft.csv",print_to_console=False)
-   parser.setContentHandler( Handler )
-   aircraft_path = "C:\\Users\\coxna\\AppData\\Roaming\\Delta Virtual\\ACARS\\aircraft.xml"
-   parser.parse(aircraft_path)
-   
-   # override the default ContextHandler
-   Handler = Airport_Handler(output_file="airports.csv",print_to_console=False)
-   parser.setContentHandler( Handler )
-   airports_path = "C:\\Users\\coxna\\AppData\\Roaming\\Delta Virtual\\ACARS\\airports.xml"
-   parser.parse(airports_path)
+def get_ACARS_data_path():
+    ''' Returns the absolute path of /dva_dispatch_tools/Data/ACARS '''
+    # Get the directory of the script
+    scriptPath1 = os.path.realpath(__file__)
+    # Get the absolute path of the parent directory of the script file
+    #pathname = os.path.dirname(sys.argv[0])
+    #scriptPath2 = os.path.abspath(pathname)
+
+    # Get the parent directory of the file dva_dispatch_tools/src/ACARS
+    parentDir1 = os.path.abspath(os.path.join(scriptPath1, os.pardir))
+    # Get the absolute path of dva_dispatch_tools/src
+    parentDir2 = os.path.abspath(os.path.join(parentDir1, os.pardir))
+    # Get the absolute path of dva_dispatch_tools
+    parentDir3 = os.path.abspath(os.path.join(parentDir2, os.pardir))
+
+    # Get the absolute path of dva_dispatch_tools/Data
+    dataDir = os.path.join(parentDir3,'Data')
+    # Get the absolute path of dva_dispatch_tools/Data/ACARS
+    ACARSDataDir = os.path.join(dataDir,'ACARS')
+    return ACARSDataDir
+
+
+def main():
+    # Path of ACARS source data (hardcoded for now)
+    src_data_dir = "C:\\Users\\coxna\\AppData\\Roaming\\Delta Virtual\\ACARS"
+
+    # Get the path of where all the output data is going
+    dest_data_dir = get_ACARS_data_path()
+    
+    # create an XMLReader
+    parser = xml.sax.make_parser()
+    # turn off namepsaces
+    parser.setFeature(xml.sax.handler.feature_namespaces, 0)
+
+    # override the default ContextHandler
+    Handler = Aircraft_Handler(output_file=os.path.join(dest_data_dir,"aircraft.txt"),print_to_console=False)
+    parser.setContentHandler( Handler )
+    aircraft_path = os.path.join(src_data_dir,"aircraft.xml")
+    parser.parse(aircraft_path)
+
+    # override the default ContextHandler
+    Handler = Airport_Handler(output_file=os.path.join(dest_data_dir,"airports.txt"),print_to_console=False)
+    parser.setContentHandler( Handler )
+    airports_path = os.path.join(src_data_dir,"airports.xml")
+    parser.parse(airports_path)
+
+
+if ( __name__ == "__main__"):
+    main()
