@@ -260,8 +260,8 @@ class Airport_Handler(xml.sax.ContentHandler):
         return row
 
 
-def get_ACARS_data_path():
-    ''' Returns the absolute path of /dva_dispatch_tools/Data/ACARS '''
+def get_data_path():
+    ''' Returns the absolute path of /dva_dispatch_tools/Data '''
     # Get the directory of the script
     scriptPath1 = os.path.realpath(__file__)
     # Get the absolute path of the parent directory of the script file
@@ -278,6 +278,13 @@ def get_ACARS_data_path():
     # Get the absolute path of dva_dispatch_tools/Data
     dataDir = os.path.join(parentDir3,'Data')
     # Get the absolute path of dva_dispatch_tools/Data/ACARS
+    #ACARSDataDir = os.path.join(dataDir,'ACARS')
+    return dataDir
+
+
+def get_ACARS_data_path():
+    ''' Returns the absolute path of /dva_dispatch_tools/Data/ACARS '''
+    dataDir = get_data_path()
     ACARSDataDir = os.path.join(dataDir,'ACARS')
     return ACARSDataDir
 
@@ -287,7 +294,7 @@ def main():
     src_data_dir = "C:\\Users\\coxna\\AppData\\Roaming\\Delta Virtual\\ACARS"
 
     # Get the path of where all the output data is going
-    dest_data_dir = get_ACARS_data_path()
+    dest_data_dir = get_data_path()
     
     # create an XMLReader
     parser = xml.sax.make_parser()
